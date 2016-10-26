@@ -15,6 +15,6 @@ Redis running locally on the default port 6379. To install and start Redis on a 
 ## To run:
 npm install
 
-node servei
+node server
 
 Open http://localhost:3000 in your browser
