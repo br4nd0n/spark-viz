@@ -1,5 +1,17 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype html
+html(ng-app="sparkviz")
+    head
+        title= 'Spark Real Time Visualization'
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        link(rel='stylesheet', href='/stylesheets/toolkit-light.css')
+        script(src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+        script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js")
+        script(src="//cdn.socket.io/socket.io-1.2.1.js")
+        script(src="/angular-socket-io/socket.js")
+        script(src="/javascripts/spark-viz.js")
+    body(ng-controller="SparkVizController").with-iconav
+        div {{time}}
+        div {{data}}
+        // scripts
+                         script(src='/libs/tablesorter.min.js')
+        script(src='/libs/toolkit.js')
