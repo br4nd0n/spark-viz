@@ -1,17 +1,141 @@
-doctype html
-html(ng-app="sparkviz")
-    head
-        title= 'Spark Real Time Visualization'
-        link(rel='stylesheet', href='/stylesheets/style.css')
-        link(rel='stylesheet', href='/stylesheets/toolkit-light.css')
-        script(src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
-        script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js")
-        script(src="//cdn.socket.io/socket.io-1.2.1.js")
-        script(src="/angular-socket-io/socket.js")
-        script(src="/javascripts/spark-viz.js")
-    body(ng-controller="SparkVizController").with-iconav
-        div {{time}}
-        div {{data}}
-        // scripts
-                         script(src='/libs/tablesorter.min.js')
-        script(src='/libs/toolkit.js')
+extends layout
+block content
+    // sub header
+    .container-fluid.container-fluid-spacious
+        .dashhead.m-t-md
+            .dashhead-titles
+                h6.dashhead-subtitle Real Time Analytics
+                h2.dashhead-title Visualization
+            //.btn-toolbar.dashhead-toolbar
+                //.btn-toolbar-item.input-with-icon
+                    //input.form-control(type='text', value='01/01/15 - 01/08/15', data-provide='datepicker')
+                    //span.icon.icon-calendar
+        // tiled graps
+        .hr-divider.m-t.m-b-md
+            h3.hr-divider-content.hr-divider-heading Core Metrics
+        .row.statcards
+            .col-md-4.m-b
+                .p-a.text-center
+                    span.statcard-desc Total Words Analyzed
+                    h2.statcard-number
+                        | {{totalWords}}
+                    small.label.label-success words
+                //canvas#sparkline1.sparkline(width='378', height='94', data-chart='spark-line', data-value="[{strokeColor: '#1ca8dd', fillColor:'rgba(28,168,221,.03)', data:[28,68,41,43,96,45,100]}]", data-labels="['a', 'b','c','d','e','f','g']", style='width: 189px; height: 47px;')
+            .col-md-4.m-b
+                .statcard
+                    .p-a.text-center
+                        span.statcard-desc Total Characters
+                        h2.statcard-number
+                            | {{totalCharacters}}
+                        small.label.label-success characters
+                    //canvas#sparkline1.sparkline(width='378', height='94', data-chart='spark-line', data-value="[{strokeColor: '#1ca8dd', fillColor:'rgba(28,168,221,.03)', data:[4,34,64,27,96,50,80]}]", data-labels="['a', 'b','c','d','e','f','g']", style='width: 189px; height: 47px;')
+            .col-md-4.m-b
+                .statcard
+                    .p-a.text-center
+                        span.statcard-desc Avg Word Length
+                        h2.statcard-number
+                            | {{avgWordLength}}
+                        small.label.label-success characters
+                    //canvas#sparkline1.sparkline(width='378', height='94', data-chart='spark-line', data-value="[{strokeColor: '#1ca8dd', fillColor:'rgba(28,168,221,.03)', data:[12,38,32,60,36,54,68]}]", data-labels="['a', 'b','c','d','e','f','g']", style='width: 189px; height: 47px;')
+        .hr-divider.m-t.m-b-md
+            h3.hr-divider-content.hr-divider-heading Data Flow Visualization
+        .row.statcards
+            #dataflow
+        // line tabs
+        .hr-divider.m-b-md
+            h3.hr-divider-content.hr-divider-heading Data Velocity
+        .row
+            .col-md-4.m-b
+                .list-group
+                    h4.list-group-header
+                        | Data Stream Message Counts
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{velocities['ShopOutputs']}}/min
+                        |          Shop Outputs
+                    a.list-group-item(href='#')
+                        //span.list-group-progress(style='width: 15.0%;')
+                        span.pull-right.text-muted {{velocities['ShopOutputsInvalid']}}/min
+                        |           Shop Outputs (Invalid)
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{velocities['ShopOutputsValid']}}/min
+                        |           Shop Output (Valid)
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{velocities['ShopOutputErrors']}}/min
+                        |           Shop Output Errors
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{velocities['ShopOutputErrorsReal']}}/min
+                        |           Shop Output Errors (Real)
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{velocities['ShopOutputErrorsNoAvail']}}/min
+                        |           Shop Output Errors (NoAvail)
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{velocities['ShopResults']}}/min
+                        |           Shop Results
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{velocities['Comparisons']}}/min
+                        |           Comparisons
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{velocities['Scores']}}/min
+                        |           Scores
+            .col-md-4.m-b
+                .list-group
+                    h4.list-group-header
+                        | Kafka Stream Velocity
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{kafkaVel['ftpshops']}} msg/s
+                        |           Shop Outputs
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{kafkaVel['ftpshopserror']}} msg/s
+                        |           Shop Output Errors
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{kafkaVel['bmlcomparisons']}} msg/s
+                        |           Comparisons
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{kafkaVel['bmlscores']}} msg/s
+                        |           Scores
+            .col-md-4.m-b
+                .list-group
+                    h4.list-group-header
+                        | Kafka Consumer Lag
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{kafkaLag['ftpshops']}} messages
+                        |           Shop Outputs
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{kafkaLag['ftpshopserror']}} messages
+                        |           Shop Output Errors
+                    //a.list-group-item(href='#')
+                    //    span.pull-right.text-muted {{kafkaLag['bmlcomparisons']}} messages
+                    //    |           Comparisons (Expe
+        .hr-divider.m-b-md
+            h3.hr-divider-content.hr-divider-heading Quick Stats
+        .row
+            .col-md-4.m-b
+                .list-group
+                    h4.list-group-header
+                        | Other System Stats
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{numCacheKeys}} keys
+                        |          Redis Shop Cache Size
+                    a.list-group-item(href='#')
+                        //span.list-group-progress(style='width: 15.0%;')
+                        span.pull-right.text-muted {{durations.PairedShopTimeDelta.secondsMean}}s
+                        |          Compared Shops Avg Time Delta
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted  {{sparkDStreamLag}}s (TBI)
+                        |          Spark DStream lag
+            .col-md-4.m-b
+                .list-group
+                    h4.list-group-header
+                        | Reference Data Sets
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{syncInSpark['SiteGroup'] | date:'yyyy-MM-dd HH:mm'}}
+                        |          Site Data Last Spark Load Time
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{syncFromChandler['SiteGroup'] | date:'yyyy-MM-dd HH:mm'}}
+                        |          Site Data Last Chandler Sync Time
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{syncInSpark['FX'] | date:'yyyy-MM-dd HH:mm'}}
+                        |          FX Data Last Spark Load Time
+                    a.list-group-item(href='#')
+                        span.pull-right.text-muted {{syncFromChandler['FX'] | date:'yyyy-MM-dd HH:mm'}}
+                        |          FX Data Last Chandler Sync Time
