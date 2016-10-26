@@ -4,8 +4,8 @@ block content
     .container-fluid.container-fluid-spacious
         .dashhead.m-t-md
             .dashhead-titles
-                h6.dashhead-subtitle Real Time Analytics
-                h2.dashhead-title Visualization
+                h6.dashhead-subtitle Spark Streaming
+                h2.dashhead-title Data Visualization
             //.btn-toolbar.dashhead-toolbar
                 //.btn-toolbar-item.input-with-icon
                     //input.form-control(type='text', value='01/01/15 - 01/08/15', data-provide='datepicker')
@@ -43,99 +43,23 @@ block content
             #dataflow
         // line tabs
         .hr-divider.m-b-md
-            h3.hr-divider-content.hr-divider-heading Data Velocity
+            h3.hr-divider-content.hr-divider-heading Detail Stats
         .row
             .col-md-4.m-b
                 .list-group
                     h4.list-group-header
-                        | Data Stream Message Counts
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{velocities['ShopOutputs']}}/min
-                        |          Shop Outputs
-                    a.list-group-item(href='#')
-                        //span.list-group-progress(style='width: 15.0%;')
-                        span.pull-right.text-muted {{velocities['ShopOutputsInvalid']}}/min
-                        |           Shop Outputs (Invalid)
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{velocities['ShopOutputsValid']}}/min
-                        |           Shop Output (Valid)
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{velocities['ShopOutputErrors']}}/min
-                        |           Shop Output Errors
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{velocities['ShopOutputErrorsReal']}}/min
-                        |           Shop Output Errors (Real)
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{velocities['ShopOutputErrorsNoAvail']}}/min
-                        |           Shop Output Errors (NoAvail)
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{velocities['ShopResults']}}/min
-                        |           Shop Results
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{velocities['Comparisons']}}/min
-                        |           Comparisons
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{velocities['Scores']}}/min
-                        |           Scores
+                        | Counts By Word Length
+                    a(ng-repeat="detailMetric in detailMetrics | orderBy:'wordLength' | limitTo: 10").list-group-item(href='#')
+                        span.pull-right.text-muted {{detailMetric.count}} words
+                        |          Words of length: {{detailMetric.wordLength}}
+
             .col-md-4.m-b
                 .list-group
                     h4.list-group-header
-                        | Kafka Stream Velocity
+                        | Operational Metrics
                     a.list-group-item(href='#')
-                        span.pull-right.text-muted {{kafkaVel['ftpshops']}} msg/s
-                        |           Shop Outputs
+                        span.pull-right.text-muted 300 msg/s
+                        |           Stream Velocity
                     a.list-group-item(href='#')
-                        span.pull-right.text-muted {{kafkaVel['ftpshopserror']}} msg/s
-                        |           Shop Output Errors
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{kafkaVel['bmlcomparisons']}} msg/s
-                        |           Comparisons
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{kafkaVel['bmlscores']}} msg/s
-                        |           Scores
-            .col-md-4.m-b
-                .list-group
-                    h4.list-group-header
-                        | Kafka Consumer Lag
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{kafkaLag['ftpshops']}} messages
-                        |           Shop Outputs
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{kafkaLag['ftpshopserror']}} messages
-                        |           Shop Output Errors
-                    //a.list-group-item(href='#')
-                    //    span.pull-right.text-muted {{kafkaLag['bmlcomparisons']}} messages
-                    //    |           Comparisons (Expe
-        .hr-divider.m-b-md
-            h3.hr-divider-content.hr-divider-heading Quick Stats
-        .row
-            .col-md-4.m-b
-                .list-group
-                    h4.list-group-header
-                        | Other System Stats
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{numCacheKeys}} keys
-                        |          Redis Shop Cache Size
-                    a.list-group-item(href='#')
-                        //span.list-group-progress(style='width: 15.0%;')
-                        span.pull-right.text-muted {{durations.PairedShopTimeDelta.secondsMean}}s
-                        |          Compared Shops Avg Time Delta
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted  {{sparkDStreamLag}}s (TBI)
-                        |          Spark DStream lag
-            .col-md-4.m-b
-                .list-group
-                    h4.list-group-header
-                        | Reference Data Sets
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{syncInSpark['SiteGroup'] | date:'yyyy-MM-dd HH:mm'}}
-                        |          Site Data Last Spark Load Time
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{syncFromChandler['SiteGroup'] | date:'yyyy-MM-dd HH:mm'}}
-                        |          Site Data Last Chandler Sync Time
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{syncInSpark['FX'] | date:'yyyy-MM-dd HH:mm'}}
-                        |          FX Data Last Spark Load Time
-                    a.list-group-item(href='#')
-                        span.pull-right.text-muted {{syncFromChandler['FX'] | date:'yyyy-MM-dd HH:mm'}}
-                        |          FX Data Last Chandler Sync Time
+                        span.pull-right.text-muted 50 msg
+                        |           Consumer Lag
