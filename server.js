@@ -16,7 +16,8 @@ redisClient.on('connect', function () {
 });
 redisClient.subscribe('detail-metrics',
     'summary-metrics',
-    'raw-messages');
+    'raw-messages',
+    'stream-transitions');
 
 redisClient.on('message', function (channel, msg) {
     io.sockets.emit(channel, msg);
