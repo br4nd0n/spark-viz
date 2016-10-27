@@ -111,7 +111,7 @@ sparkVizModule.controller('SparkVizController', ['$scope', '$http', 'socket', fu
     socket.on('raw-messages', function (msg) {
         $scope.words.unshift(msg);
 
-        if ($scope.words.length > 10)
+        if ($scope.words.length > 15)
             $scope.words.pop();
 
     });
